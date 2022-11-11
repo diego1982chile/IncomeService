@@ -16,7 +16,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "neighbor")
-public class Neighbor {
+public class Neighbor extends AbstractPersistableEntity<Long> {
 
     /**
      * Identificador o llave primaria de la entidad persistente

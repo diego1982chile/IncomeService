@@ -16,7 +16,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "month")
-public class Month {
+public class Month extends AbstractPersistableEntity<Long> {
 
     /**
      * Identificador o llave primaria de la entidad persistente

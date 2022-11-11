@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * Created by root on 13-10-22.
  */
-public interface NeighborRepository extends JpaRepository<Neighbor, Integer> {
+public interface NeighborRepository extends JpaRepository<Neighbor, Long> {
 }

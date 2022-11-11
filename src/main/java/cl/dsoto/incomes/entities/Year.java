@@ -16,7 +16,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "year")
-public class Year {
+public class Year extends AbstractPersistableEntity<Long> {
 
     /**
      * Identificador o llave primaria de la entidad persistente

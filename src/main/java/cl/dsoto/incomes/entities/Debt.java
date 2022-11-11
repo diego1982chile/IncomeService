@@ -16,7 +16,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "debt")
-public class Debt {
+public class Debt extends AbstractPersistableEntity<Long> {
 
     /**
      * Identificador o llave primaria de la entidad persistente
@@ -26,9 +26,6 @@ public class Debt {
     private Long id;
 
     private int amount;
-
-    @ManyToOne
-    private House house;
 
 
 }

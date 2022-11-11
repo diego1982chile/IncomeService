@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "house")
-public class House {
+public class House extends AbstractPersistableEntity<Long> {
 
     /**
      * Identificador o llave primaria de la entidad persistente
@@ -33,6 +33,13 @@ public class House {
     private int number;
 
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private List<Neighbor> neighbors;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    private List<Debt> debts;
+
+    public int getTotalDebt() {
+        return getDebts().stream().mapToInt(Debt::getAmount).sum();
+    }
 }

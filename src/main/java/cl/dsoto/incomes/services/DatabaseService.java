@@ -67,7 +67,11 @@ public class DatabaseService {
         }
 
         for(int j = 1; j <= houseNumbers.length; ++j) {
-            House house = House.builder().number(houseNumbers[j-1]).neighbors(new ArrayList<>()).build();
+            House house = House.builder()
+                    .number(houseNumbers[j-1])
+                    .neighbors(new ArrayList<>())
+                    .debts(new ArrayList<>())
+                    .build();
             Neighbor neighbor1 = Neighbor.builder()
                     .name("Diego")
                     .lastname("Soto")
@@ -80,8 +84,10 @@ public class DatabaseService {
                     .email("fca.herrer@gmail.com")
                     .phone("+56940929147")
                     .build();
+            Debt debt = Debt.builder().amount(50000).build();
             house.getNeighbors().add(neighbor1);
             house.getNeighbors().add(neighbor2);
+            house.getDebts().add(debt);
             //neighborRepository.save(neighbor1);
             //neighborRepository.save(neighbor2);
             houses.add(house);

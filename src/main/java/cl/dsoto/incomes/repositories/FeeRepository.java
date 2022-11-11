@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by root on 13-10-22.
  */
-public interface FeeRepository extends JpaRepository<Fee, Integer> {
+public interface FeeRepository extends JpaRepository<Fee, Long> {
 
     @Query("SELECT f FROM Fee f WHERE f.year.year = :year order by f.month.month")
     List<Fee> findByYearOrderByMonth(@Param("year") int year);

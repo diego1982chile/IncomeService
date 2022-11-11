@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -33,5 +34,23 @@ public class HouseService {
 
     public List<House> getHouses() {
         return houseRepository.findAll();
+    }
+
+    public House getHouseById(int id) {
+        return houseRepository.findById(id);
+    }
+
+    @Transactional
+    public House saveHouse(House house) {
+        if(house.isPersisted()) {
+            House previous = houseRepository.findById(house.getId());
+            previous.setDebts(house.getDebts());
+            previous.setNumber(house.getNumber());
+            previous.setNeighbors(house.getNeighbors());
+            return houseRepository.save(previous);
+        }
+        else {
+            return houseRepository.save(house);
+        }
     }
 }

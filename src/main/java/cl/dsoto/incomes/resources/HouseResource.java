@@ -7,9 +7,7 @@ import cl.dsoto.incomes.services.YearService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.logging.Level;
@@ -31,10 +29,36 @@ public class HouseResource {
     static private final Logger logger = Logger.getLogger(HouseResource.class.getName());
 
     @GET
-    public Response getAllYears() {
+    public Response getAllHouses() {
         try {
             List<House> houses = houseService.getHouses();
             return Response.ok(houses).build();
+        }
+        catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage());
+        }
+        return Response.serverError().build();
+    }
+
+    @GET
+    @Path("{id}")
+    public Response getHouseById(@PathParam("id") int id) {
+        try {
+            House house = houseService.getHouseById(id);
+            return Response.ok(house).build();
+        }
+        catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage());
+        }
+        return Response.serverError().build();
+    }
+
+    @POST
+    @Path("save")
+    public Response saveHouse(House house) {
+        try {
+            House newHouse = houseService.saveHouse(house);
+            return Response.ok(newHouse).build();
         }
         catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage());

@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by root on 13-10-22.
  */
-public interface YearRepository extends JpaRepository<Year, Integer> {
+public interface YearRepository extends JpaRepository<Year, Long> {
 
     @Query("SELECT y FROM Year y order by y.year desc")
     List<Year> findAllOrderByYearDesc();

@@ -3,6 +3,7 @@ package cl.dsoto.incomes.services;
 import cl.dsoto.incomes.entities.House;
 import cl.dsoto.incomes.entities.Year;
 import cl.dsoto.incomes.repositories.HouseRepository;
+import cl.dsoto.incomes.repositories.NeighborRepository;
 import cl.dsoto.incomes.repositories.YearRepository;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
@@ -23,6 +24,7 @@ public class HouseService {
     @PersistenceContext
     private EntityManager entityManager;
     private HouseRepository houseRepository;
+    private NeighborRepository neighborRepository;
 
     @PostConstruct
     private void init() {
@@ -30,6 +32,7 @@ public class HouseService {
         RepositoryFactorySupport factory = new JpaRepositoryFactory(entityManager);
         // Get an implemetation of PersonRepository from factory
         this.houseRepository = factory.getRepository(HouseRepository.class);
+        this.neighborRepository = factory.getRepository(NeighborRepository.class);
     }
 
     public List<House> getHouses() {

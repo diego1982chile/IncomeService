@@ -9,6 +9,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,6 +34,21 @@ public class HouseResource {
         try {
             List<House> houses = houseService.getHouses();
             return Response.ok(houses).build();
+        }
+        catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage());
+        }
+        return Response.serverError().build();
+    }
+
+    @GET
+    @Path("new")
+    public Response getNewHouse() {
+        try {
+            House house = House.builder().build();
+            house.setNeighbors(new ArrayList<>());
+            house.setDebts(new ArrayList<>());
+            return Response.ok(house).build();
         }
         catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage());

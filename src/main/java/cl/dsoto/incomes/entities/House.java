@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,16 +31,21 @@ public class House extends AbstractPersistableEntity<Long> {
      * Rut del alumno
      */
     @Column(unique = true)
-    private int number;
+    private Integer number;
 
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    private List<Neighbor> neighbors;
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    private List<Neighbor> neighbors = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    private List<Debt> debts;
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    private List<Debt> debts = new ArrayList<>();
 
     public int getTotalDebt() {
-        return getDebts().stream().mapToInt(Debt::getAmount).sum();
+        if(getDebts() == null) {
+            return 0;
+        }
+        else {
+            return getDebts().stream().mapToInt(Debt::getAmount).sum();
+        }
     }
 }

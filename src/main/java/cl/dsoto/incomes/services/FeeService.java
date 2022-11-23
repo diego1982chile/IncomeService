@@ -14,6 +14,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -41,9 +42,14 @@ public class FeeService {
         List<Map<String, String>> fees = new ArrayList<>();
 
         Map<House, List<Fee>> feesPerHouse = feesEntities.stream()
+                .filter(f -> f.getHouse() != null)
                 .collect(groupingBy(Fee::getHouse));
 
-        for (House house : feesPerHouse.keySet()) {
+        List<House> houses = feesPerHouse.keySet().stream()
+                .sorted((e1, e2) -> e1.getNumber() - e2.getNumber())
+                .collect(Collectors.toList());
+
+        for (House house : houses) {
             Map<String, String> feesMap = new LinkedHashMap<>();
             feesMap.put("house", "CASA " + String.valueOf(house.getNumber()));
             for (Fee fee : feesPerHouse.get(house)) {

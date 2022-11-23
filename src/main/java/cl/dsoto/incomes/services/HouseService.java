@@ -2,6 +2,7 @@ package cl.dsoto.incomes.services;
 
 import cl.dsoto.incomes.entities.House;
 import cl.dsoto.incomes.entities.Year;
+import cl.dsoto.incomes.repositories.FeeRepository;
 import cl.dsoto.incomes.repositories.HouseRepository;
 import cl.dsoto.incomes.repositories.NeighborRepository;
 import cl.dsoto.incomes.repositories.YearRepository;
@@ -25,6 +26,7 @@ public class HouseService {
     private EntityManager entityManager;
     private HouseRepository houseRepository;
     private NeighborRepository neighborRepository;
+    private FeeRepository feeRepository;
 
     @PostConstruct
     private void init() {
@@ -33,10 +35,11 @@ public class HouseService {
         // Get an implemetation of PersonRepository from factory
         this.houseRepository = factory.getRepository(HouseRepository.class);
         this.neighborRepository = factory.getRepository(NeighborRepository.class);
+        this.feeRepository = factory.getRepository(FeeRepository.class);
     }
 
     public List<House> getHouses() {
-        return houseRepository.findAll();
+        return houseRepository.findAllOrderByNumber();
     }
 
     public House getHouseById(int id) {
@@ -55,5 +58,12 @@ public class HouseService {
         else {
             return houseRepository.save(house);
         }
+    }
+
+    @Transactional
+    public void deleteHouse(long id) {
+        feeRepository.deleteByHouseId(id);
+        houseRepository.delete(id);
+
     }
 }

@@ -1,4 +1,4 @@
-package cl.dsoto.incomes.resources;
+package cl.dsoto.incomes.config;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

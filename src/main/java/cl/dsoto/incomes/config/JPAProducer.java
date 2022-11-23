@@ -1,4 +1,4 @@
-package cl.dsoto.incomes.dao;
+package cl.dsoto.incomes.config;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;

@@ -27,6 +27,8 @@ public class HouseResource {
     @Inject
     HouseService houseService;
 
+    String errorMsg;
+
     static private final Logger logger = Logger.getLogger(HouseResource.class.getName());
 
     @GET
@@ -78,7 +80,31 @@ public class HouseResource {
         }
         catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage());
+            errorMsg = getRootCause(e);
+        }
+        return Response.serverError().entity(errorMsg).build();
+    }
+
+    @DELETE
+    @Path("delete/{id}")
+    public Response deleteAccount(@PathParam("id") long id) {
+        try {
+            houseService.deleteHouse(id);
+            return Response.ok(id).build();
+        }
+        catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage());
         }
         return Response.serverError().build();
+    }
+
+    String getRootCause(Exception e) {
+        Throwable cause = e.getCause();
+
+        while(cause.getCause() != null) {
+            cause = cause.getCause();
+        }
+
+        return cause.getMessage();
     }
 }

@@ -1,9 +1,9 @@
 package cl.dsoto.incomes.resources;
 
 import cl.dsoto.incomes.entities.House;
-import cl.dsoto.incomes.entities.Year;
+import cl.dsoto.incomes.entities.Payment;
 import cl.dsoto.incomes.services.HouseService;
-import cl.dsoto.incomes.services.YearService;
+import cl.dsoto.incomes.services.PaymentService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -22,20 +22,20 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @RequestScoped
 @Produces(APPLICATION_JSON)
 @Path("houses")
-public class HouseResource {
+public class PaymentResource {
 
     @Inject
-    HouseService houseService;
+    PaymentService paymentService;
 
     String errorMsg;
 
-    static private final Logger logger = Logger.getLogger(HouseResource.class.getName());
+    static private final Logger logger = Logger.getLogger(PaymentResource.class.getName());
 
     @GET
-    public Response getAllHouses() {
+    public Response getPayments(long feeId) {
         try {
-            List<House> houses = houseService.getHouses();
-            return Response.ok(houses).build();
+            List<Payment> payments = paymentService.getPayments();
+            return Response.ok(payments).build();
         }
         catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage());
@@ -45,12 +45,10 @@ public class HouseResource {
 
     @GET
     @Path("new")
-    public Response getNewHouse() {
+    public Response getNewPayment() {
         try {
-            House house = House.builder().build();
-            house.setNeighbors(new ArrayList<>());
-            house.setDebts(new ArrayList<>());
-            return Response.ok(house).build();
+            Payment payment = Payment.builder().build();
+            return Response.ok(payment).build();
         }
         catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage());
@@ -60,10 +58,10 @@ public class HouseResource {
 
     @GET
     @Path("{id}")
-    public Response getHouseById(@PathParam("id") int id) {
+    public Response getPaymentById(@PathParam("id") int id) {
         try {
-            House house = houseService.getHouseById(id);
-            return Response.ok(house).build();
+            Payment payment = paymentService.getPaymentById(id);
+            return Response.ok(payment).build();
         }
         catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage());
@@ -73,10 +71,10 @@ public class HouseResource {
 
     @POST
     @Path("save")
-    public Response saveHouse(House house) {
+    public Response savePayment(Payment payment) {
         try {
-            House newHouse = houseService.saveHouse(house);
-            return Response.ok(newHouse).build();
+            Payment newPayment = paymentService.savePayment(payment);
+            return Response.ok(newPayment).build();
         }
         catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage());
@@ -87,9 +85,9 @@ public class HouseResource {
 
     @DELETE
     @Path("delete/{id}")
-    public Response deleteHouse(@PathParam("id") long id) {
+    public Response deletePayment(@PathParam("id") long id) {
         try {
-            houseService.deleteHouse(id);
+            paymentService.deleteHouse(id);
             return Response.ok(id).build();
         }
         catch (Exception e) {

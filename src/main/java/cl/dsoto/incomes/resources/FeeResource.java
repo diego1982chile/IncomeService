@@ -1,5 +1,6 @@
 package cl.dsoto.incomes.resources;
 
+import cl.dsoto.incomes.dtos.FeeDTO;
 import cl.dsoto.incomes.entities.Fee;
 import cl.dsoto.incomes.entities.Year;
 import cl.dsoto.incomes.services.FeeService;
@@ -36,7 +37,7 @@ public class FeeResource {
     @Path("{year}")
     public Response getAllFees(@PathParam("year") int year) {
         try {
-            List<Map<String, String>> fees = feeService.getFees(year);
+            List<Map<String, Object>> fees = feeService.getFees(year);
             return Response.ok(fees).build();
         }
         catch (Exception e) {

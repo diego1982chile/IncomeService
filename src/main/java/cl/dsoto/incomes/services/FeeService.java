@@ -1,5 +1,6 @@
 package cl.dsoto.incomes.services;
 
+import cl.dsoto.incomes.dtos.FeeDTO;
 import cl.dsoto.incomes.entities.Fee;
 import cl.dsoto.incomes.entities.House;
 import cl.dsoto.incomes.entities.Payment;
@@ -37,9 +38,10 @@ public class FeeService {
         this.feeRepository = factory.getRepository(FeeRepository.class);
     }
 
-    public List<Map<String, String>> getFees(int year) {
+    public List<Map<String, Object>> getFees(int year) {
+
         List<Fee> feesEntities = feeRepository.findByYearOrderByMonth(year);
-        List<Map<String, String>> fees = new ArrayList<>();
+        List<Map<String, Object>> fees = new ArrayList<>();
 
         Map<House, List<Fee>> feesPerHouse = feesEntities.stream()
                 .filter(f -> f.getHouse() != null)
@@ -50,10 +52,15 @@ public class FeeService {
                 .collect(Collectors.toList());
 
         for (House house : houses) {
-            Map<String, String> feesMap = new LinkedHashMap<>();
+            Map<String, Object> feesMap = new LinkedHashMap<>();
             feesMap.put("house", "CASA " + String.valueOf(house.getNumber()));
             for (Fee fee : feesPerHouse.get(house)) {
-                feesMap.put(fee.getMonth().getName().substring(0, 3).toUpperCase(), String.valueOf(fee.getPayments().stream().mapToInt(Payment::getAmount).sum()));
+                FeeDTO feeDTO = FeeDTO.builder()
+                        .id(fee.getId())
+                        .amount(fee.getAmount())
+                        .payment(fee.getPayments().stream().mapToInt(Payment::getAmount).sum())
+                        .build();
+                feesMap.put(fee.getMonth().getName().substring(0, 3).toUpperCase(), feeDTO);
             }
             fees.add(feesMap);
         }

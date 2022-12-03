@@ -39,7 +39,7 @@ public class Fee extends AbstractPersistableEntity<Long> {
     @ManyToOne
     private Month month;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Payment> payments;
 
 }

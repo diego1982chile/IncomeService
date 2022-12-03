@@ -6,6 +6,7 @@ import cl.dsoto.incomes.entities.House;
 import cl.dsoto.incomes.entities.Payment;
 import cl.dsoto.incomes.entities.Year;
 import cl.dsoto.incomes.repositories.FeeRepository;
+import cl.dsoto.incomes.repositories.PaymentRepository;
 import cl.dsoto.incomes.repositories.YearRepository;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
@@ -14,6 +15,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,12 +33,15 @@ public class FeeService {
 
     private FeeRepository feeRepository;
 
+    private PaymentRepository paymentRepository;
+
     @PostConstruct
     private void init() {
         // Instantiate Spring Data factory
         RepositoryFactorySupport factory = new JpaRepositoryFactory(entityManager);
         // Get an implemetation of PersonRepository from factory
         this.feeRepository = factory.getRepository(FeeRepository.class);
+        this.paymentRepository = factory.getRepository(PaymentRepository.class);
     }
 
     public List<Map<String, Object>> getFees(int year) {
@@ -66,5 +72,26 @@ public class FeeService {
         }
 
         return fees;
+    }
+
+    public Fee getFeeById(int id) {
+        return feeRepository.findById(id);
+    }
+
+    @Transactional
+    public Fee saveFee(Fee fee) {
+        if(fee.isPersisted()) {
+            Fee previous = feeRepository.findById(fee.getId());
+            fee.getPayments().forEach(e -> {
+                if(!e.isPersisted()) {
+                    e.setDatetime(LocalDateTime.now());
+                    previous.getPayments().add(e);
+                }
+            });
+            return feeRepository.save(previous);
+        }
+        else {
+            return feeRepository.save(fee);
+        }
     }
 }

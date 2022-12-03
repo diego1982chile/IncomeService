@@ -21,7 +21,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
  */
 @RequestScoped
 @Produces(APPLICATION_JSON)
-@Path("houses")
+@Path("payments")
 public class PaymentResource {
 
     @Inject
@@ -32,9 +32,10 @@ public class PaymentResource {
     static private final Logger logger = Logger.getLogger(PaymentResource.class.getName());
 
     @GET
-    public Response getPayments(long feeId) {
+    @Path("{feeId}")
+    public Response getPayments(@PathParam("feeId") int feeId) {
         try {
-            List<Payment> payments = paymentService.getPayments();
+            List<Payment> payments = paymentService.findPaymentsByFee(feeId);
             return Response.ok(payments).build();
         }
         catch (Exception e) {
@@ -56,6 +57,7 @@ public class PaymentResource {
         return Response.serverError().build();
     }
 
+    /*
     @GET
     @Path("{id}")
     public Response getPaymentById(@PathParam("id") int id) {
@@ -68,6 +70,7 @@ public class PaymentResource {
         }
         return Response.serverError().build();
     }
+    */
 
     @POST
     @Path("save")

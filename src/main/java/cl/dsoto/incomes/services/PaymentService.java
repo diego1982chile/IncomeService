@@ -1,5 +1,6 @@
 package cl.dsoto.incomes.services;
 
+import cl.dsoto.incomes.entities.Fee;
 import cl.dsoto.incomes.entities.House;
 import cl.dsoto.incomes.entities.Payment;
 import cl.dsoto.incomes.repositories.FeeRepository;
@@ -14,6 +15,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -25,6 +27,7 @@ public class PaymentService {
     @PersistenceContext
     private EntityManager entityManager;
     private PaymentRepository paymentRepository;
+    private FeeRepository feeRepository;
 
     @PostConstruct
     private void init() {
@@ -32,10 +35,16 @@ public class PaymentService {
         RepositoryFactorySupport factory = new JpaRepositoryFactory(entityManager);
         // Get an implemetation of PersonRepository from factory
         this.paymentRepository = factory.getRepository(PaymentRepository.class);
+        this.feeRepository = factory.getRepository(FeeRepository.class);
     }
 
     public List<Payment> getPayments() {
         return paymentRepository.findAllOrderByDateTime();
+    }
+
+    public List<Payment> findPaymentsByFee(long feeId) {
+        Fee fee = feeRepository.findById(feeId);
+        return fee.getPayments();
     }
 
     public Payment getPaymentById(int id) {
@@ -52,6 +61,7 @@ public class PaymentService {
             return paymentRepository.save(previous);
         }
         else {
+            payment.setDatetime(LocalDateTime.now());
             return paymentRepository.save(payment);
         }
     }

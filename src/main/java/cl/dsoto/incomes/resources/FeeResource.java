@@ -8,10 +8,7 @@ import cl.dsoto.incomes.services.YearService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
@@ -31,18 +28,45 @@ public class FeeResource {
     @Inject
     FeeService feeService;
 
+    String errorMsg;
+
     static private final Logger logger = Logger.getLogger(FeeResource.class.getName());
 
+
     @GET
-    @Path("{year}")
-    public Response getAllFees(@PathParam("year") int year) {
+    @Path("{id}")
+    public Response getFeeById(@PathParam("id") int id) {
         try {
-            List<Map<String, Object>> fees = feeService.getFees(year);
-            return Response.ok(fees).build();
+            Fee fee = feeService.getFeeById(id);
+            return Response.ok(fee).build();
         }
         catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage());
         }
         return Response.serverError().build();
+    }
+
+    @POST
+    @Path("save")
+    public Response savePayment(Fee fee) {
+        try {
+            Fee newFee = feeService.saveFee(fee);
+            return Response.ok(newFee).build();
+        }
+        catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            errorMsg = getRootCause(e);
+        }
+        return Response.serverError().entity(errorMsg).build();
+    }
+
+    private String getRootCause(Exception e) {
+        Throwable cause = e.getCause();
+
+        while(cause.getCause() != null) {
+            cause = cause.getCause();
+        }
+
+        return cause.getMessage();
     }
 }

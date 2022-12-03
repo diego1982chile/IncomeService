@@ -23,4 +23,6 @@ public interface FeeRepository extends JpaRepository<Fee, Long> {
     @Modifying
     @Query("delete from Fee f where f.house.id = :houseId")
     void deleteByHouseId(@Param("houseId") long houseId);
+
+    Fee findById(long id);
 }

@@ -82,16 +82,49 @@ public class FeeService {
     public Fee saveFee(Fee fee) {
         if(fee.isPersisted()) {
             Fee previous = feeRepository.findById(fee.getId());
+
             fee.getPayments().forEach(e -> {
                 if(!e.isPersisted()) {
-                    e.setDatetime(LocalDateTime.now());
-                    previous.getPayments().add(e);
+                    if(!previous.getPayments().stream().map(Payment::getNumber).collect(Collectors.toSet()).contains(e.getNumber())) {
+                        e.setDatetime(LocalDateTime.now());
+                        previous.getPayments().add(e);
+                    }
+                }
+                /*
+                else {
+                    if(!fee.getPayments().stream().map(Payment::getNumber).collect(Collectors.toSet()).contains(e.getNumber())) {
+                        e.setDatetime(LocalDateTime.now());
+                        previous.getPayments().add(e);
+                    }
+                }
+                */
+            });
+
+            Set<Payment> toRemove = new HashSet<>();
+
+            previous.getPayments().forEach(e -> {
+                if(!fee.getPayments().contains(e)) {
+                    toRemove.add(e);
                 }
             });
+
+            previous.getPayments().removeAll(toRemove);
+
             return feeRepository.save(previous);
         }
         else {
             return feeRepository.save(fee);
         }
+    }
+
+    public int generatePaymentNumber(int feeId) {
+        Fee fee = feeRepository.findById(feeId);
+        int correlative = fee.getPayments().size() + 1;
+        String number = fee.getHouse().getNumber().toString() +
+                String.valueOf(fee.getYear().getYear()).substring(Math.max(String.valueOf(fee.getYear().getYear()).length() - 2, 0)) +
+                String.format("%02d", fee.getMonth().getMonth()) +
+                String.valueOf(correlative);
+
+        return Integer.parseInt(number);
     }
 }

@@ -2,6 +2,7 @@ package cl.dsoto.incomes.resources;
 
 import cl.dsoto.incomes.entities.House;
 import cl.dsoto.incomes.entities.Payment;
+import cl.dsoto.incomes.services.FeeService;
 import cl.dsoto.incomes.services.HouseService;
 import cl.dsoto.incomes.services.PaymentService;
 
@@ -27,12 +28,15 @@ public class PaymentResource {
     @Inject
     PaymentService paymentService;
 
+    @Inject
+    FeeService feeService;
+
     String errorMsg;
 
     static private final Logger logger = Logger.getLogger(PaymentResource.class.getName());
 
     @GET
-    @Path("{feeId}")
+    @Path("fee/{feeId}")
     public Response getPayments(@PathParam("feeId") int feeId) {
         try {
             List<Payment> payments = paymentService.findPaymentsByFee(feeId);
@@ -44,11 +48,12 @@ public class PaymentResource {
         return Response.serverError().build();
     }
 
+
     @GET
-    @Path("new")
-    public Response getNewPayment() {
+    @Path("new/{feeId}")
+    public Response getNewPayment(@PathParam("feeId") int feeId) {
         try {
-            Payment payment = Payment.builder().build();
+            Payment payment = Payment.builder().number(feeService.generatePaymentNumber(feeId)).build();
             return Response.ok(payment).build();
         }
         catch (Exception e) {
@@ -57,7 +62,7 @@ public class PaymentResource {
         return Response.serverError().build();
     }
 
-    /*
+
     @GET
     @Path("{id}")
     public Response getPaymentById(@PathParam("id") int id) {
@@ -70,7 +75,7 @@ public class PaymentResource {
         }
         return Response.serverError().build();
     }
-    */
+
 
     @POST
     @Path("save")

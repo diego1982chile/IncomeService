@@ -3,6 +3,8 @@ package cl.dsoto.incomes.resources;
 import cl.dsoto.incomes.entities.Fee;
 import cl.dsoto.incomes.services.FeeService;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -23,6 +25,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @RequestScoped
 @Produces(APPLICATION_JSON)
 @Path("feesDTO")
+@RolesAllowed({"ADMIN","USER"})
+//@PermitAll
 public class FeeDTOResource {
 
     @Inject

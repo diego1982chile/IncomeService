@@ -4,6 +4,7 @@ import cl.dsoto.incomes.entities.Year;
 import cl.dsoto.incomes.services.DatabaseService;
 import cl.dsoto.incomes.services.YearService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.Json;
@@ -24,6 +25,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @RequestScoped
 @Produces(APPLICATION_JSON)
 @Path("database")
+@RolesAllowed({"ADMIN"})
 public class DatabaseResource {
 
     @Inject

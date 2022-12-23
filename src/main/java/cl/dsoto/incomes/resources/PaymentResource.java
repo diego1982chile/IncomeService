@@ -6,6 +6,8 @@ import cl.dsoto.incomes.services.FeeService;
 import cl.dsoto.incomes.services.HouseService;
 import cl.dsoto.incomes.services.PaymentService;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -23,6 +25,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @RequestScoped
 @Produces(APPLICATION_JSON)
 @Path("payments")
+@RolesAllowed({"ADMIN","USER"})
+//@PermitAll
 public class PaymentResource {
 
     @Inject

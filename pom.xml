@@ -13,9 +13,9 @@
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.javaee>8.0</version.javaee>
-        <version.payara.micro>5.182</version.payara.micro>
+        <version.payara.micro>5.2020.2</version.payara.micro>
         <hibernate.version>5.2.10.Final</hibernate.version>
-        <javaee-api.version>7.0</javaee-api.version>
+        <javaee-api.version>8.0</javaee-api.version>
         <spring-data-releasetrain.version>Ingalls-SR6</spring-data-releasetrain.version>
     </properties>
 
@@ -37,8 +37,23 @@
 
         <dependency>
             <groupId>javax</groupId>
-            <artifactId>javaee-web-api</artifactId>
+            <artifactId>javaee-api</artifactId>
             <version>${version.javaee}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.microprofile</groupId>
+            <artifactId>microprofile</artifactId>
+            <version>3.2</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.microprofile.jwt</groupId>
+            <artifactId>microprofile-jwt-auth-api</artifactId>
+            <version>LATEST</version>
             <scope>provided</scope>
         </dependency>
 
@@ -86,6 +101,13 @@
             <groupId>org.microprofile-ext.openapi-ext</groupId>
             <artifactId>openapi-ui</artifactId>
             <version>1.1.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fish.payara.extras</groupId>
+            <artifactId>payara-embedded-web</artifactId>
+            <version>5.2020.2</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

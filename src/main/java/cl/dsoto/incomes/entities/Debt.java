@@ -27,5 +27,6 @@ public class Debt extends AbstractPersistableEntity<Long> {
 
     private int amount;
 
-
+    @ManyToOne
+    private Payment payment;
 }

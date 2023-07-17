@@ -50,6 +50,45 @@ public class FeeResource {
         return Response.serverError().build();
     }
 
+    @GET
+    @Path("unpaid/{id}")
+    public Response getFeesHistory(@PathParam("id") int id) {
+        try {
+            List<Fee> fees = feeService.getUnpaidFees(id);
+            return Response.ok(fees).build();
+        }
+        catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage());
+        }
+        return Response.serverError().build();
+    }
+
+    @GET
+    @Path("payment/{id}")
+    public Response getFeesByPayment(@PathParam("id") int id) {
+        try {
+            List<Fee> fees = feeService.getFeesByPayment(id);
+            return Response.ok(fees).build();
+        }
+        catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage());
+        }
+        return Response.serverError().build();
+    }
+
+    @GET
+    @Path("house/{houseNumber}")
+    public Response getFeesByHouse(@PathParam("houseNumber") int houseId) {
+        try {
+            List<Fee> fees = feeService.getFeeByHouse(houseId);
+            return Response.ok(fees).build();
+        }
+        catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage());
+        }
+        return Response.serverError().build();
+    }
+
     @POST
     @Path("save")
     public Response savePayment(Fee fee) {

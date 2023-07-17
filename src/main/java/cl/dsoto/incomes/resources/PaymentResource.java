@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,6 +69,20 @@ public class PaymentResource {
 
 
     @GET
+    @Path("new/list/{feeId}")
+    public Response getNewPaymentList(@PathParam("feeId") int feeId) {
+        try {
+            List<Payment> payments = Collections.singletonList(Payment.builder().build());
+            return Response.ok(payments).build();
+        }
+        catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage());
+        }
+        return Response.serverError().build();
+    }
+
+
+    @GET
     @Path("{id}")
     public Response getPaymentById(@PathParam("id") int id) {
         try {
@@ -80,12 +95,25 @@ public class PaymentResource {
         return Response.serverError().build();
     }
 
+    @GET
+    @Path("list/{id}")
+    public Response getPaymentListById(@PathParam("id") int id) {
+        try {
+            List<Payment> payments = Collections.singletonList(paymentService.getPaymentById(id));
+            return Response.ok(payments).build();
+        }
+        catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage());
+        }
+        return Response.serverError().build();
+    }
+
 
     @POST
     @Path("save")
-    public Response savePayment(Payment payment) {
+    public Response savePayment(Payment payment, @QueryParam("fees") List<Integer> fees) {
         try {
-            Payment newPayment = paymentService.savePayment(payment);
+            Payment newPayment = paymentService.savePayment(payment, fees);
             return Response.ok(newPayment).build();
         }
         catch (Exception e) {

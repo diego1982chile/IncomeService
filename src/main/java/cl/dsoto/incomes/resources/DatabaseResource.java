@@ -37,6 +37,7 @@ public class DatabaseResource {
     @Path("load")
     public Response loadData() {
         try {
+            databaseService.removeData();
             databaseService.loadData();
             JsonObject json = Json.createObjectBuilder()
                     .add("message", "DB was succesfuly loaded").build();

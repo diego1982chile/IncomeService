@@ -25,4 +25,13 @@ public interface FeeRepository extends JpaRepository<Fee, Long> {
     void deleteByHouseId(@Param("houseId") long houseId);
 
     Fee findById(long id);
+
+    @Query("SELECT f FROM Fee f WHERE f.house.number = :house AND f.payment is null order by f.year.year, f.month.month")
+    List<Fee> findByHouseOrderByMonth(@Param("house") int house);
+
+    @Query("SELECT f FROM Fee f WHERE f.house.number = :house AND f.payment is null AND f.year.year <= :year order by f.year.year, f.month.month")
+    List<Fee> findUnpaid(@Param("house") int house, @Param("year") int year);
+
+    @Query("SELECT f FROM Fee f WHERE f.payment.number = :paymentNumber order by f.year.year, f.month.month")
+    List<Fee> findByPayment(@Param("paymentNumber") int paymentNumber);
 }

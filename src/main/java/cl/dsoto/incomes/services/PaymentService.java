@@ -16,6 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ public class PaymentService {
 
     public List<Payment> findPaymentsByFee(long feeId) {
         Fee fee = feeRepository.findById(feeId);
-        return fee.getPayments();
+        return Collections.singletonList(fee.getPayment());
     }
 
     public Payment getPaymentById(int id) {
@@ -52,17 +53,33 @@ public class PaymentService {
     }
 
     @Transactional
-    public Payment savePayment(Payment payment) {
+    public Payment savePayment(Payment payment, List<Integer> fees) {
         if(payment.isPersisted()) {
             Payment previous = paymentRepository.findById(payment.getId());
             previous.setAmount(payment.getAmount());
             previous.setNeighbor(payment.getNeighbor());
             previous.setDatetime(payment.getDatetime());
+            updateFees(previous, fees);
             return paymentRepository.save(previous);
         }
         else {
             payment.setDatetime(LocalDateTime.now());
+            updateFees(payment, fees);
             return paymentRepository.save(payment);
+        }
+
+    }
+
+    private void updateFees(Payment payment, List<Integer> fees) {
+
+        List<Fee> toRemove = feeRepository.findByPayment(payment.getNumber());
+
+        //feeRepository.delete(toRemove);
+
+        for (Integer id : fees) {
+            Fee fee = feeRepository.findById(id);
+            fee.setPayment(payment);
+            feeRepository.save(fee);
         }
     }
 

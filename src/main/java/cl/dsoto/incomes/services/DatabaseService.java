@@ -46,10 +46,19 @@ public class DatabaseService {
     }
 
     @Transactional
+    public void removeData() {
+        feeRepository.deleteAll();
+        neighborRepository.deleteAll();
+        houseRepository.deleteAll();
+        monthRepository.deleteAll();
+        yearRepository.deleteAll();
+    }
+
+    @Transactional
     public void loadData() {
 
-        int start = LocalDate.now().getYear() - 2;
-        int end = LocalDate.now().getYear() + 1;
+        int start = LocalDate.now().getYear() - 1;
+        int end = LocalDate.now().getYear();
 
         List<Year> years = new ArrayList<>();
         List<Month> months = new ArrayList<>();

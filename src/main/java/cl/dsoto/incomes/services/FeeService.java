@@ -63,7 +63,7 @@ public class FeeService {
                 FeeDTO feeDTO = FeeDTO.builder()
                         .id(fee.getId())
                         .amount(fee.getAmount())
-                        .payment(Objects.nonNull(fee.getPayment()) ? fee.getPayment().getAmount() : 0)
+                        .payment(Objects.nonNull(fee.getPayment()) ? fee.getAmount() : 0)
                         .build();
                 feesMap.put(fee.getMonth().getName().substring(0, 3).toUpperCase(), feeDTO);
             }
@@ -120,11 +120,9 @@ public class FeeService {
 
     public int generatePaymentNumber(int feeId) {
         Fee fee = feeRepository.findById(feeId);
-        int correlative = 1;
-        String number = fee.getHouse().getNumber().toString() +
-                String.valueOf(fee.getYear().getYear()).substring(Math.max(String.valueOf(fee.getYear().getYear()).length() - 2, 0)) +
-                String.format("%02d", fee.getMonth().getMonth()) +
-                String.valueOf(correlative);
+        List<Payment> payments = paymentRepository.findAll();
+        int correlative = payments.size();
+        String number = fee.getHouse().getNumber().toString() + String.valueOf(correlative);
 
         return Integer.parseInt(number);
     }

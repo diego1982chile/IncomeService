@@ -26,6 +26,7 @@ public class DatabaseService {
     private MonthRepository monthRepository;
     private HouseRepository houseRepository;
     private NeighborRepository neighborRepository;
+    private PaymentRepository paymentRepository;
     private FeeRepository feeRepository;
 
     private String[] monthNames = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
@@ -42,12 +43,14 @@ public class DatabaseService {
         this.houseRepository = factory.getRepository(HouseRepository.class);
         this.houseRepository = factory.getRepository(HouseRepository.class);
         this.neighborRepository = factory.getRepository(NeighborRepository.class);
+        this.paymentRepository = factory.getRepository(PaymentRepository.class);
         this.feeRepository = factory.getRepository(FeeRepository.class);
     }
 
     @Transactional
     public void removeData() {
         feeRepository.deleteAll();
+        paymentRepository.deleteAll();
         neighborRepository.deleteAll();
         houseRepository.deleteAll();
         monthRepository.deleteAll();

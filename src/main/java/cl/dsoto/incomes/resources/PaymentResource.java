@@ -10,6 +10,8 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -127,7 +130,7 @@ public class PaymentResource {
     @Path("delete/{id}")
     public Response deletePayment(@PathParam("id") long id) {
         try {
-            paymentService.deleteHouse(id);
+            paymentService.deletePayment(id);
             return Response.ok(id).build();
         }
         catch (Exception e) {

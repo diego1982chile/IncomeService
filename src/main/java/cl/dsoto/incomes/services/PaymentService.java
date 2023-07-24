@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by root on 13-10-22.
@@ -64,8 +65,9 @@ public class PaymentService {
         }
         else {
             payment.setDatetime(LocalDateTime.now());
+            paymentRepository.saveAndFlush(payment);
             updateFees(payment, fees);
-            return paymentRepository.save(payment);
+            return paymentRepository.findByNumber(payment.getNumber());
         }
 
     }
@@ -76,15 +78,21 @@ public class PaymentService {
 
         //feeRepository.delete(toRemove);
 
-        for (Integer id : fees) {
-            Fee fee = feeRepository.findById(id);
+        fees.stream().filter(Objects::nonNull).forEach(f -> {
+            Fee fee = feeRepository.findById(f);
             fee.setPayment(payment);
             feeRepository.save(fee);
-        }
+        });
     }
 
     @Transactional
-    public void deleteHouse(long id) {
+    public void deletePayment(long id) {
+        Payment payment = paymentRepository.findById(id);
+        List<Fee> fees = feeRepository.findByPayment(payment.getNumber());
+        for (Fee fee : fees) {
+            fee.setPayment(null);
+            feeRepository.save(fee);
+        }
         paymentRepository.delete(id);
     }
 }

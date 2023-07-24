@@ -45,7 +45,7 @@ public class Fee extends AbstractPersistableEntity<Long> {
     */
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     private Payment payment;
 
 

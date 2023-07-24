@@ -26,6 +26,7 @@ public class Payment extends AbstractPersistableEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique=true)
     private int number;
 
     private int amount;

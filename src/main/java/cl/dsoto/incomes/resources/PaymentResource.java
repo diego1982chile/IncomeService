@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.EMPTY_LIST;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
@@ -75,7 +76,7 @@ public class PaymentResource {
     @Path("new/list/{feeId}")
     public Response getNewPaymentList(@PathParam("feeId") int feeId) {
         try {
-            List<Payment> payments = Collections.singletonList(Payment.builder().build());
+            List<Payment> payments = Collections.singletonList(Payment.builder().id(-1L).build());
             return Response.ok(payments).build();
         }
         catch (Exception e) {
@@ -114,9 +115,9 @@ public class PaymentResource {
 
     @POST
     @Path("save")
-    public Response savePayment(Payment payment, @QueryParam("fees") List<Integer> fees) {
+    public Response savePayment(Payment payment, @QueryParam("fees") List<Integer> fees, @QueryParam("debts") List<Integer> debts) {
         try {
-            Payment newPayment = paymentService.savePayment(payment, fees);
+            Payment newPayment = paymentService.savePayment(payment, fees, debts);
             return Response.ok(newPayment).build();
         }
         catch (Exception e) {

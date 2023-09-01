@@ -1,12 +1,10 @@
 package cl.dsoto.incomes.services;
 
+import cl.dsoto.incomes.entities.Debt;
 import cl.dsoto.incomes.entities.Fee;
 import cl.dsoto.incomes.entities.House;
 import cl.dsoto.incomes.entities.Payment;
-import cl.dsoto.incomes.repositories.FeeRepository;
-import cl.dsoto.incomes.repositories.HouseRepository;
-import cl.dsoto.incomes.repositories.NeighborRepository;
-import cl.dsoto.incomes.repositories.PaymentRepository;
+import cl.dsoto.incomes.repositories.*;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
@@ -28,8 +26,10 @@ public class PaymentService {
 
     @PersistenceContext
     private EntityManager entityManager;
+
     private PaymentRepository paymentRepository;
     private FeeRepository feeRepository;
+    private DebtRepository debtRepository;
 
     @PostConstruct
     private void init() {
@@ -38,6 +38,7 @@ public class PaymentService {
         // Get an implemetation of PersonRepository from factory
         this.paymentRepository = factory.getRepository(PaymentRepository.class);
         this.feeRepository = factory.getRepository(FeeRepository.class);
+        this.debtRepository = factory.getRepository(DebtRepository.class);
     }
 
     public List<Payment> getPayments() {
@@ -54,19 +55,21 @@ public class PaymentService {
     }
 
     @Transactional
-    public Payment savePayment(Payment payment, List<Integer> fees) {
+    public Payment savePayment(Payment payment, List<Integer> fees, List<Integer> debts) {
         if(payment.isPersisted()) {
             Payment previous = paymentRepository.findById(payment.getId());
             previous.setAmount(payment.getAmount());
             previous.setNeighbor(payment.getNeighbor());
             previous.setDatetime(payment.getDatetime());
             updateFees(previous, fees);
+            updateDebts(previous, debts);
             return paymentRepository.save(previous);
         }
         else {
             payment.setDatetime(LocalDateTime.now());
             paymentRepository.saveAndFlush(payment);
             updateFees(payment, fees);
+            updateDebts(payment, debts);
             return paymentRepository.findByNumber(payment.getNumber());
         }
 
@@ -85,6 +88,15 @@ public class PaymentService {
         });
     }
 
+    private void updateDebts(Payment payment, List<Integer> debts) {
+
+        debts.stream().filter(Objects::nonNull).forEach(d -> {
+            Debt debt = debtRepository.findById(d);
+            debt.setPayment(payment);
+            debtRepository.save(debt);
+        });
+    }
+
     @Transactional
     public void deletePayment(long id) {
         Payment payment = paymentRepository.findById(id);
@@ -92,6 +104,11 @@ public class PaymentService {
         for (Fee fee : fees) {
             fee.setPayment(null);
             feeRepository.save(fee);
+        }
+        List<Debt> debts = debtRepository.findByPayment(payment.getNumber());
+        for (Debt debt : debts) {
+            debt.setPayment(null);
+            debtRepository.save(debt);
         }
         paymentRepository.delete(id);
     }

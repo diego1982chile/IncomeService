@@ -15,4 +15,8 @@ public class FeeDTO {
     private int amount;
 
     private int payment;
+
+    private int month;
+
+    private AmountType amountType;
 }

@@ -110,6 +110,6 @@ public class PaymentService {
             debt.setPayment(null);
             debtRepository.save(debt);
         }
-        paymentRepository.delete(id);
+        paymentRepository.delete(payment);
     }
 }

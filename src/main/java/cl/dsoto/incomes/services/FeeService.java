@@ -9,6 +9,7 @@ import cl.dsoto.incomes.repositories.PaymentRepository;
 import cl.dsoto.incomes.repositories.YearRepository;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
@@ -93,28 +94,32 @@ public class FeeService {
 
         for (Map<String, Object> fee : fees) {
 
+            totals.put("house", "TOTAL");
+
+            FeeDTO debtDTO = (FeeDTO) fee.get("DEBT");
+
+            if (debtDTO.getMonth() == 0 && debtDTO.getAmountType().equals(AmountType.DEBT)) {
+                if (totals.containsKey(AmountType.DEBT.name())) {
+                    FeeDTO totalDTO = (FeeDTO) totals.get(AmountType.DEBT.name());
+                    totalDTO.setPayment(totalDTO.getPayment() + debtDTO.getPayment());
+                } else {
+                    FeeDTO totalDTO = FeeDTO.builder()
+                            .payment(debtDTO.getPayment())
+                            .amountType(AmountType.DEBT)
+                            .build();
+                    totals.put(AmountType.DEBT.name(), totalDTO);
+                }
+            }
+
             for (Month month : monthRepository.findAllOrderByMonth()) {
 
                 for (String s : fee.keySet()) {
-                    if (s.equalsIgnoreCase("house")) {
-                        totals.put("house", "TOTALES");
+
+                    if (s.equals("house") || s.equals("DEBT") || s.equals("TOTAL")) {
                         continue;
                     }
 
                     FeeDTO feeDTO = (FeeDTO) fee.get(s);
-
-                    if (feeDTO.getMonth() == 0 && feeDTO.getAmountType().equals(AmountType.DEBT)) {
-                        if (totals.containsKey(AmountType.DEBT.name())) {
-                            FeeDTO totalDTO = (FeeDTO) totals.get(AmountType.DEBT.name());
-                            totalDTO.setPayment(totalDTO.getPayment() + feeDTO.getPayment());
-                        } else {
-                            FeeDTO totalDTO = FeeDTO.builder()
-                                    .payment(feeDTO.getPayment())
-                                    .amountType(AmountType.DEBT)
-                                    .build();
-                            totals.put(AmountType.DEBT.name(), totalDTO);
-                        }
-                    }
 
                     if (month.getMonth() == feeDTO.getMonth()) {
                         if (totals.containsKey(month.getName().substring(0, 3).toUpperCase())) {

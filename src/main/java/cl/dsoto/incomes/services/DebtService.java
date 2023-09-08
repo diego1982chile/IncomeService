@@ -53,7 +53,7 @@ public class DebtService {
     }
 
     public List<Debt> getDebtByHouse(int houseNumber) {
-        List<House> houses = houseRepository.findAllOrderByNumber();
+        List<House> houses = houseRepository.findByNumber(houseNumber);
         List<Debt> debts = new ArrayList<>();
 
         if (!houses.isEmpty()) {
